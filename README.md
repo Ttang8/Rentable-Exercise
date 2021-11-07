@@ -56,6 +56,7 @@ runtime:  1807 ms
 ## Parts done
 ### Main
 - Parse and map an XML file to an expected output given the format.
+- Only add the property to the output if the property location is in Madison.
 
 ### Extra
 - Parse out the number of bedrooms. Displayed in property objects as array of floorplans. Each floorplan has name and bedrooms.
