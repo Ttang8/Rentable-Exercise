@@ -1,9 +1,12 @@
 const http = require('http')
 const xmlParser = require('xml2json')
+const util = require('util')
 
 let url = 'http://s3.amazonaws.com/abodo-misc/sample_abodo_feed.xml'
 
 let properties = []
+
+let runTime = 0
 
 let filterLocations = ['Madison']
 
@@ -36,8 +39,8 @@ async function fetchProperties(filter = []) {
         let allProperties = data['PhysicalProperty']['Property'];
 
         for (const key in allProperties) {
-            let latitude = allProperties[key]['ILS_Identification']['Latitude']
-            let longitude = allProperties[key]['ILS_Identification']['Longitude']
+            // let latitude = allProperties[key]['ILS_Identification']['Latitude']
+            // let longitude = allProperties[key]['ILS_Identification']['Longitude']
 
             let prop = {
                 property_id: allProperties[key]['PropertyID']['Identification']['IDValue'],
@@ -56,14 +59,11 @@ async function fetchProperties(filter = []) {
             } else {
                 properties.push(prop)
             }
-
         }
 
         let endTime = new Date().getTime()
-        let runTime = endTime - startTime
-
-        console.log('Properties: ',properties);
-        console.log('runtime: ',runTime, 'ms');
+        runTime = endTime - startTime
+        return properties
 
     } catch (error) {
         console.log(error);
@@ -98,7 +98,13 @@ function createFloorPlans(obj) {
     return floorplans
 }
 
-fetchProperties(filterLocations)
+async function run() {
+    let result = await fetchProperties(filterLocations)
+    console.log('Properties', util.inspect(result, false, null, true))
+    console.log('runtime: ',runTime, 'ms');
+}
+
+run()
 
 module.exports = {
   fetchProperties
